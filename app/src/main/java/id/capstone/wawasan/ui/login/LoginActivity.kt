@@ -1,4 +1,4 @@
-package id.capstone.wawasan.ui
+package id.capstone.wawasan.ui.login
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -7,6 +7,7 @@ import android.util.Patterns
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import id.capstone.wawasan.databinding.ActivityLoginBinding
+import id.capstone.wawasan.ui.home.HomeActivity
 
 class LoginActivity : AppCompatActivity() {
 

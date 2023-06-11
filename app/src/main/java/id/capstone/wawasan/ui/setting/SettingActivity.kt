@@ -1,15 +1,19 @@
-package id.capstone.wawasan.ui
+package id.capstone.wawasan.ui.setting
 
 import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
 import id.capstone.wawasan.R
 import id.capstone.wawasan.databinding.ActivitySettingBinding
+import id.capstone.wawasan.ui.profile.ProfileFragment
+import id.capstone.wawasan.ui.changepassword.ChangePasswordFragment
+import id.capstone.wawasan.ui.configurehost.ConfigureHostActivity
+import id.capstone.wawasan.ui.home.HomeActivity
+import id.capstone.wawasan.ui.login.LoginActivity
 
 class SettingActivity : AppCompatActivity(), ProfileFragment.ProfileUpdateListener {
 
@@ -48,10 +52,10 @@ class SettingActivity : AppCompatActivity(), ProfileFragment.ProfileUpdateListen
         }
 
         binding.btnChangepass.setOnClickListener {
-            val changeProfileFragment = ChangePasswordFragment()
+            val changePasswordFragment = ChangePasswordFragment()
             supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.container, changeProfileFragment)
+                .replace(R.id.container, changePasswordFragment)
                 .addToBackStack(null)
                 .commit()
         }

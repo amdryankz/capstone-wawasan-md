@@ -8,6 +8,7 @@ import android.os.Handler
 import android.os.Looper
 import com.google.firebase.auth.FirebaseAuth
 import id.capstone.wawasan.R
+import id.capstone.wawasan.ui.home.HomeActivity
 
 @SuppressLint("CustomSplashScreen")
 class SplashScreen : AppCompatActivity() {

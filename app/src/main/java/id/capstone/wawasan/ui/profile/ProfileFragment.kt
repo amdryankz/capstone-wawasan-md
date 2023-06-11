@@ -1,4 +1,4 @@
-package id.capstone.wawasan.ui
+package id.capstone.wawasan.ui.profile
 
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
@@ -18,6 +18,7 @@ import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 import id.capstone.wawasan.databinding.FragmentProfileBinding
+import id.capstone.wawasan.ui.setting.SettingActivity
 import java.io.ByteArrayOutputStream
 
 class ProfileFragment : Fragment() {

@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.HomeActivity">
+    android:background="@color/white"
+    tools:context=".ui.home.HomeActivity">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/ivProfile"
@@ -40,37 +41,41 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:contentDescription="@string/setting" />
     
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/materialSearch"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="12dp"
+        android:layout_marginTop="4dp"
+        app:cardUseCompatPadding="true"
+        app:layout_constraintTop_toBottomOf="@id/ivProfile"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:queryHint="Search supplier"
+            app:iconifiedByDefault="false"
+            android:background="@color/white"
+            app:queryBackground="@android:color/transparent"/>
+    </com.google.android.material.card.MaterialCardView>
+    
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ivProfile"
+        app:layout_constraintTop_toBottomOf="@id/materialSearch"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_margin="8dp"
-        android:stretchColumns="1,2,3,4">
+        android:stretchColumns="1">
 
         <TableRow>
             <TextView
-                android:text="Sales"
-                android:textSize="16dp"
-                android:textStyle="bold"
-                android:padding="10dp"
-                android:layout_column="1"/>
-            <TextView
-                android:text="Product"
-                android:textSize="16dp"
-                android:textStyle="bold"
-                android:padding="10dp"
-                android:layout_column="1"/>
-            <TextView
-                android:text="Stock"
-                android:textSize="16dp"
-                android:textStyle="bold"
-                android:padding="10dp"
-                android:layout_column="1"/>
-            <TextView
-                android:text="Needed"
-                android:textSize="16dp"
+                android:text="Supplier"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:padding="10dp"
                 android:layout_column="1"/>
@@ -80,7 +85,7 @@
             android:id="@+id/rv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:listitem="@layout/item_dummy"/>
+            tools:listitem="@layout/item_supplier"/>
 
     </TableLayout>
 

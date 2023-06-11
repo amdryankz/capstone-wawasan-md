@@ -21,16 +21,16 @@
             android:name=".ui.WelcomeActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.SettingActivity"
+            android:name=".ui.setting.SettingActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.ConfigureHostActivity"
+            android:name=".ui.configurehost.ConfigureHostActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.HomeActivity"
+            android:name=".ui.home.HomeActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.LoginActivity"
+            android:name=".ui.login.LoginActivity"
             android:exported="false" />
         <activity
             android:name=".ui.SplashScreen"

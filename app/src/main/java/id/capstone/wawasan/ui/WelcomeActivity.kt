@@ -3,9 +3,8 @@ package id.capstone.wawasan.ui
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.google.firebase.auth.FirebaseAuth
-import id.capstone.wawasan.R
 import id.capstone.wawasan.databinding.ActivityWelcomeBinding
+import id.capstone.wawasan.ui.login.LoginActivity
 
 class WelcomeActivity : AppCompatActivity() {
 
