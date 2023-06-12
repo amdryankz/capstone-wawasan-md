@@ -14,10 +14,6 @@ class HomeViewModel : ViewModel() {
     private val _data = MutableLiveData<Responses>()
     val data: LiveData<Responses> = _data
 
-    companion object {
-        private const val TAG = "HomeViewModel"
-    }
-
     init {
         getData()
     }
@@ -44,5 +40,9 @@ class HomeViewModel : ViewModel() {
                 Log.e(TAG, "onFailure: ${t.message}")
             }
         })
+    }
+
+    companion object {
+        private const val TAG = "HomeViewModel"
     }
 }

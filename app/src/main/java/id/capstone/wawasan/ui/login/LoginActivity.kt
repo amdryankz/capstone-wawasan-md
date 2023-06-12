@@ -4,57 +4,76 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Patterns
-import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import id.capstone.wawasan.databinding.ActivityLoginBinding
+import id.capstone.wawasan.ui.AuthManager
 import id.capstone.wawasan.ui.home.HomeActivity
+import id.capstone.wawasan.util.ToastUtil
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
-    private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var authManager: AuthManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        firebaseAuth = FirebaseAuth.getInstance()
+        authManager = AuthManager(FirebaseAuth.getInstance())
+
         binding.loginButton.setOnClickListener {
             val email = binding.etEmail.text.toString()
             val pass = binding.etPassword.text.toString()
 
-            if (email.isEmpty()) {
-                binding.etEmail.error = "Email is required"
-                binding.etEmail.requestFocus()
+            if (!validateEmail(email)) {
                 return@setOnClickListener
             }
 
-            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                binding.etEmail.error = "Invalid Email"
-                binding.etEmail.requestFocus()
+            if (!validatePassword(pass)) {
                 return@setOnClickListener
             }
 
-            if (pass.isEmpty()) {
-                binding.etPassword.error = "Password is required"
-                binding.etPassword.requestFocus()
-                return@setOnClickListener
-            }
-
-            if (email.isNotEmpty() && pass.isNotEmpty()) {
-                firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        val intent = Intent(this, HomeActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-                        startActivity(intent)
-                        finish()
-                    } else {
-                        Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
-                    }
+            authManager.signInWithEmailAndPassword(email, pass) { success, error ->
+                if (success) {
+                    navigateToHomeActivity()
+                } else {
+                    ToastUtil.showShortToast(this, error ?: "Login Gagal")
                 }
             }
         }
+    }
 
+    private fun validateEmail(email: String): Boolean {
+        if (email.isEmpty()) {
+            binding.etEmail.error = "Email harus diisi"
+            binding.etEmail.requestFocus()
+            return false
+        }
+
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            binding.etEmail.error = "Email tidak valid"
+            binding.etEmail.requestFocus()
+            return false
+        }
+
+        return true
+    }
+
+    private fun validatePassword(password: String): Boolean {
+        if (password.isEmpty()) {
+            binding.etPassword.error = "Password harus diisi"
+            binding.etPassword.requestFocus()
+            return false
+        }
+
+        return true
+    }
+
+    private fun navigateToHomeActivity() {
+        val intent = Intent(this, HomeActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        startActivity(intent)
+        finish()
     }
 }

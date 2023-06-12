@@ -1,4 +1,4 @@
-package id.capstone.wawasan.ui
+package id.capstone.wawasan.ui.welcome
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity

@@ -9,6 +9,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
 import id.capstone.wawasan.R
 import id.capstone.wawasan.databinding.ActivitySettingBinding
+import id.capstone.wawasan.ui.AuthManager
 import id.capstone.wawasan.ui.profile.ProfileFragment
 import id.capstone.wawasan.ui.changepassword.ChangePasswordFragment
 import id.capstone.wawasan.ui.configurehost.ConfigureHostActivity
@@ -18,16 +19,16 @@ import id.capstone.wawasan.ui.login.LoginActivity
 class SettingActivity : AppCompatActivity(), ProfileFragment.ProfileUpdateListener {
 
     private lateinit var binding: ActivitySettingBinding
-    private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var authManager: AuthManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySettingBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        firebaseAuth = FirebaseAuth.getInstance()
+        authManager = AuthManager(FirebaseAuth.getInstance())
 
-        val user = firebaseAuth.currentUser
+        val user = authManager.getCurrentUser()
 
         if (user != null) {
             binding.tvName.text = user.displayName
@@ -83,18 +84,19 @@ class SettingActivity : AppCompatActivity(), ProfileFragment.ProfileUpdateListen
 
     private fun showLogoutConfirmationDialog() {
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("Confirm Logout")
-            .setMessage("Are you sure you want to logout?")
-            .setPositiveButton("Yes") { dialog, _ ->
+        builder.setTitle("Konfirmasi Logout")
+            .setMessage("Anda yakin ingin logout?")
+            .setPositiveButton("Iya") { dialog, _ ->
                 // Logout
-                firebaseAuth.signOut()
-                val intent = Intent(this, LoginActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-                finishAffinity()
+                authManager.logout {
+                    val intent = Intent(this, LoginActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                    finishAffinity()
+                }
                 dialog.dismiss()
             }
-            .setNegativeButton("No") { dialog, _ ->
+            .setNegativeButton("Tidak") { dialog, _ ->
                 dialog.dismiss()
             }
             .create()

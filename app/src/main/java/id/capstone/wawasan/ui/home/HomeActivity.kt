@@ -18,14 +18,17 @@ import id.capstone.wawasan.adapter.DataAdapter
 import id.capstone.wawasan.databinding.ActivityHomeBinding
 import id.capstone.wawasan.retrofit.DataItem
 import id.capstone.wawasan.retrofit.HostConfiguration
+import id.capstone.wawasan.ui.AuthManager
 import id.capstone.wawasan.ui.profile.ProfileFragment
 import id.capstone.wawasan.ui.setting.SettingActivity
 import id.capstone.wawasan.ui.configurehost.ConfigureHostViewModel
+import java.util.Locale
 
 class HomeActivity : AppCompatActivity(), ProfileFragment.ProfileUpdateListener {
 
     private lateinit var binding: ActivityHomeBinding
-    private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var authManager: AuthManager
+    private lateinit var database: FirebaseDatabase
     private val homeViewModel by viewModels<HomeViewModel>()
     private val configureHostViewModel by viewModels<ConfigureHostViewModel>()
 
@@ -34,10 +37,8 @@ class HomeActivity : AppCompatActivity(), ProfileFragment.ProfileUpdateListener 
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        firebaseAuth = FirebaseAuth.getInstance()
-
-        val user = firebaseAuth.currentUser
-        val uid = user?.uid
+        authManager = AuthManager(FirebaseAuth.getInstance())
+        val user = authManager.getCurrentUser()
 
         if (user != null) {
             binding.textName.text = user.displayName
@@ -45,18 +46,16 @@ class HomeActivity : AppCompatActivity(), ProfileFragment.ProfileUpdateListener 
             if (user.photoUrl != null) {
                 Picasso.get().load(user.photoUrl).into(binding.ivProfile)
             }
-        } else {
-            binding.textName.text = "Anonymous"
         }
 
-        val database = FirebaseDatabase.getInstance()
+        database = FirebaseDatabase.getInstance()
+        val uid = user?.uid
         val hostConfigRef = database.getReference("host_config/$uid")
 
         hostConfigRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val hostConfig = dataSnapshot.getValue(HostConfiguration::class.java)
 
-                // Gunakan konfigurasi host yang diperoleh
                 if (hostConfig != null) {
                     val username = hostConfig.username
                     val password = hostConfig.password
@@ -64,7 +63,6 @@ class HomeActivity : AppCompatActivity(), ProfileFragment.ProfileUpdateListener 
                     val port = hostConfig.port
                     val database = hostConfig.database
 
-                    // Gunakan nilai-nilai konfigurasi host untuk melakukan operasi yang diperlukan, misalnya koneksi ke database.
                     configureHostViewModel.connectToDatabase(
                         username,
                         password,
@@ -73,7 +71,7 @@ class HomeActivity : AppCompatActivity(), ProfileFragment.ProfileUpdateListener 
                         database
                     )
                     getListData(null)
-                    // ...
+                    searchData()
                 }
             }
 
@@ -87,6 +85,31 @@ class HomeActivity : AppCompatActivity(), ProfileFragment.ProfileUpdateListener 
             startActivity(intent)
         }
 
+        val layoutManager = LinearLayoutManager(this)
+        binding.rv.layoutManager = layoutManager
+        val itemDecoration = DividerItemDecoration(this, layoutManager.orientation)
+        binding.rv.addItemDecoration(itemDecoration)
+    }
+
+    private fun getListData(filter: String?) {
+        homeViewModel.data.observe(this) { dataResponse ->
+            if (dataResponse != null) {
+                val dataItems = dataResponse.data
+                val filteredDataItems =
+                    filterDataItems(dataItems, filter)
+                val adapter = DataAdapter(filteredDataItems)
+                binding.rv.adapter = adapter
+
+                adapter.setOnItemClickCallback(object : DataAdapter.OnItemClickCallback {
+                    override fun onItemClicked(list: List<DataItem>) {
+
+                    }
+                })
+            }
+        }
+    }
+
+    private fun searchData() {
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
@@ -98,38 +121,18 @@ class HomeActivity : AppCompatActivity(), ProfileFragment.ProfileUpdateListener 
             }
 
         })
-
-        val layoutManager = LinearLayoutManager(this)
-        binding.rv.layoutManager = layoutManager
-        val itemDecoration = DividerItemDecoration(this, layoutManager.orientation)
-        binding.rv.addItemDecoration(itemDecoration)
-
-    }
-
-    private fun getListData(filter: String?) {
-        homeViewModel.data.observe(this) { dataResponse ->
-            if (dataResponse != null) {
-                val dataItems = dataResponse.data
-                val filteredDataItems =
-                    filterDataItems(dataItems, filter) // Metode untuk memfilter data
-                val adapter = DataAdapter(filteredDataItems)
-                binding.rv.adapter = adapter
-            }
-        }
     }
 
     private fun filterDataItems(dataItems: List<DataItem>, filter: String?): List<DataItem> {
-        // Logika untuk memfilter daftar data berdasarkan teks yang dimasukkan
         if (filter.isNullOrEmpty()) {
-            return dataItems // Kembalikan daftar data asli jika filter kosong atau null
+            return dataItems
         }
 
         val filteredList = mutableListOf<DataItem>()
-        val query = filter.toLowerCase()
+        val query = filter.lowercase(Locale.getDefault())
 
         for (item in dataItems) {
-            // Tambahkan item ke daftar hasil filter jika memenuhi kriteria pencarian
-            if (item.nama.toLowerCase().contains(query)) {
+            if (item.nama.lowercase(Locale.getDefault()).contains(query)) {
                 filteredList.add(item)
             }
         }
@@ -143,7 +146,7 @@ class HomeActivity : AppCompatActivity(), ProfileFragment.ProfileUpdateListener 
     }
 
     private fun refreshProfile() {
-        val user = firebaseAuth.currentUser
+        val user = authManager.getCurrentUser()
 
         if (user != null) {
             binding.textName.text = user.displayName
@@ -161,6 +164,6 @@ class HomeActivity : AppCompatActivity(), ProfileFragment.ProfileUpdateListener 
 
     @Deprecated("Deprecated in Java", ReplaceWith("finishAffinity()"))
     override fun onBackPressed() {
-        finishAffinity() // Keluar dari aplikasi
+        finishAffinity()
     }
 }

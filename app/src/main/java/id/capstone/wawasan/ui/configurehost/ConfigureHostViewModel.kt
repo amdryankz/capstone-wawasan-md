@@ -1,6 +1,7 @@
 package id.capstone.wawasan.ui.configurehost
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -13,25 +14,41 @@ import retrofit2.Response
 
 class ConfigureHostViewModel : ViewModel() {
 
-    val dbResponseLiveData: MutableLiveData<DbResponse?> = MutableLiveData()
-    var isConfigured: Boolean = false
-    var isConnected: Boolean = false
 
-    fun saveConfiguration(username: String, password: String, host: String, port: String, db: String) {
-        // Simpan konfigurasi ke Firebase atau penyimpanan lokal lainnya
-        val database = FirebaseDatabase.getInstance()
+    private val _isConfigured: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isConfigured: LiveData<Boolean> = _isConfigured
 
-        val user = FirebaseAuth.getInstance().currentUser
-        val uid = user?.uid
+    private val _isConnected: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isConnected: LiveData<Boolean> = _isConnected
 
-        if (uid != null) {
-            val hostConfigRef = database.getReference("host_config/$uid")
-            val hostConfig = HostConfiguration(username, password, host, port, db)
-            hostConfigRef.setValue(hostConfig) // hostConfig adalah objek HostConfiguration yang ingin Anda simpan
+    fun validateInput(
+        username: String,
+        password: String,
+        host: String,
+        port: String,
+        db: String
+    ): String? {
+        if (username.isEmpty()) {
+            return "Username harus diisi"
         }
 
-        // Setelah konfigurasi disimpan, atur isConfigured menjadi true
-        isConfigured = true
+        if (password.isEmpty()) {
+            return "Password harus diisi"
+        }
+
+        if (host.isEmpty()) {
+            return "Host harus diisi"
+        }
+
+        if (port.isEmpty()) {
+            return "Port harus diisi"
+        }
+
+        if (db.isEmpty()) {
+            return "Database harus diisi"
+        }
+
+        return null
     }
 
     fun connectToDatabase(
@@ -40,33 +57,50 @@ class ConfigureHostViewModel : ViewModel() {
         host: String,
         port: String,
         database: String
-    ): Boolean {
+    ) {
         val api = ApiConfig.getApiService().connectDb(username, password, host, port, database)
         api.enqueue(object : retrofit2.Callback<DbResponse> {
             override fun onResponse(call: Call<DbResponse>, response: Response<DbResponse>) {
                 if (response.isSuccessful) {
-                    val dbResponse = response.body()
-                    dbResponseLiveData.value = dbResponse
-                    isConnected = true
+                    _isConnected.value = true
+                    saveConfiguration(username, password, host, port, database)
                 } else {
+                    _isConnected.value = false
                     // Handle error response
                     Log.e(TAG, "onFailure: ${response.message()}")
-                    isConnected = false
                 }
             }
 
             override fun onFailure(call: Call<DbResponse>, t: Throwable) {
+                _isConnected.value = false
                 // Handle network or API call failure
                 Log.e(TAG, "onFailure: ${t.message}")
-                isConnected = false
             }
         })
+    }
 
-        return true
+    private fun saveConfiguration(
+        username: String,
+        password: String,
+        host: String,
+        port: String,
+        db: String
+    ) {
+        val database = FirebaseDatabase.getInstance()
+
+        val user = FirebaseAuth.getInstance().currentUser
+        val uid = user?.uid
+
+        if (uid != null) {
+            val hostConfigRef = database.getReference("host_config/$uid")
+            val hostConfig = HostConfiguration(username, password, host, port, db)
+            hostConfigRef.setValue(hostConfig)
+        }
+
+        _isConfigured.value = true
     }
 
     companion object {
-        private const val TAG = "ConfigureViewModel"
+        private const val TAG = "ConfigureHostViewModel"
     }
-
 }

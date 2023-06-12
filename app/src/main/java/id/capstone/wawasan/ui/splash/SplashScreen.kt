@@ -1,4 +1,4 @@
-package id.capstone.wawasan.ui
+package id.capstone.wawasan.ui.splash
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -8,6 +8,7 @@ import android.os.Handler
 import android.os.Looper
 import com.google.firebase.auth.FirebaseAuth
 import id.capstone.wawasan.R
+import id.capstone.wawasan.ui.welcome.WelcomeActivity
 import id.capstone.wawasan.ui.home.HomeActivity
 
 @SuppressLint("CustomSplashScreen")

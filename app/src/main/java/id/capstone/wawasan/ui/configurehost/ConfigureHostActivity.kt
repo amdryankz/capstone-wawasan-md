@@ -12,7 +12,8 @@ import id.capstone.wawasan.ui.setting.SettingActivity
 class ConfigureHostActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityConfigureHostBinding
-    private val configureHostViewModel by viewModels<ConfigureHostViewModel>()
+    private var isButtonPressed = false
+    private val configureHostViewModel: ConfigureHostViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,54 +21,36 @@ class ConfigureHostActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.btnNext.setOnClickListener {
+            isButtonPressed = true
+
             val username = binding.etUsername.text.toString()
             val pass = binding.etPassword.text.toString()
             val host = binding.etHost.text.toString()
             val port = binding.etPort.text.toString()
             val db = binding.etDb.text.toString()
 
-            if (username.isEmpty()) {
-                binding.etUsername.error = "Username is required"
-                binding.etUsername.requestFocus()
+            val validationError =
+                configureHostViewModel.validateInput(username, pass, host, port, db)
+            if (validationError != null) {
+                Toast.makeText(this, validationError, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            if (pass.isEmpty()) {
-                binding.etPassword.error = "Password is required"
-                binding.etPassword.requestFocus()
-                return@setOnClickListener
+            configureHostViewModel.connectToDatabase(username, pass, host, port, db)
+        }
+
+        configureHostViewModel.isConfigured.observe(this) { isConfigured ->
+            if (isConfigured) {
+                Toast.makeText(this, "Database berhasil terkoneksi", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, HomeActivity::class.java)
+                startActivity(intent)
+                finish()
             }
+        }
 
-            if (host.isEmpty()) {
-                binding.etHost.error = "Host is required"
-                binding.etHost.requestFocus()
-                return@setOnClickListener
-            }
-
-            if (port.isEmpty()) {
-                binding.etPort.error = "Port is required"
-                binding.etPort.requestFocus()
-                return@setOnClickListener
-            }
-
-            if (db.isEmpty()) {
-                binding.etDb.error = "Database is required"
-                binding.etDb.requestFocus()
-                return@setOnClickListener
-            }
-
-            if (username.isNotEmpty() && pass.isNotEmpty() && host.isNotEmpty() && port.isNotEmpty() && db.isNotEmpty()) {
-                val isConnected = configureHostViewModel.connectToDatabase(username, pass, host, port, db)
-
-                if (isConnected) {
-                    configureHostViewModel.saveConfiguration(username, pass, host, port, db)
-                    Toast.makeText(this, "Database connected successfully", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, HomeActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                } else {
-                    Toast.makeText(this, "Failed to connect to the database", Toast.LENGTH_SHORT).show()
-                }
+        configureHostViewModel.isConnected.observe(this) { isConnected ->
+            if (isButtonPressed && !isConnected) {
+                Toast.makeText(this, "Gagal terkoneksi dengan Database", Toast.LENGTH_SHORT).show()
             }
         }
 
