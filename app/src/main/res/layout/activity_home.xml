@@ -9,10 +9,10 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/ivProfile"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         android:layout_marginTop="22dp"
-        android:layout_marginStart="22dp"
+        android:layout_marginStart="18dp"
         android:src="@drawable/icons_person"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -22,21 +22,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/name"
-        android:textSize="18sp"
-        android:typeface="serif"
+        android:textSize="20sp"
         android:textColor="@color/black"
-        android:layout_marginTop="45dp"
-        android:layout_marginStart="22dp"
+        android:layout_marginTop="46dp"
+        android:layout_marginStart="20dp"
         app:layout_constraintStart_toEndOf="@id/ivProfile"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/ic_setting"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
         android:stateListAnimator="@animator/button_press_anim"
         android:src="@drawable/ic_setting"
-        android:layout_marginEnd="20dp"
+        android:layout_marginEnd="22dp"
         app:layout_constraintBottom_toBottomOf="@+id/text_name"
         app:layout_constraintEnd_toEndOf="parent"
         android:contentDescription="@string/setting" />
@@ -45,8 +44,8 @@
         android:id="@+id/materialSearch"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="12dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="10dp"
         android:layout_marginTop="8dp"
         app:cardUseCompatPadding="true"
         app:layout_constraintTop_toBottomOf="@id/ivProfile"
@@ -74,10 +73,11 @@
 
         <TableRow>
             <TextView
-                android:text="Supplier"
-                android:textSize="16sp"
+                android:text="@string/supplier"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 android:padding="10dp"
+                android:textColor="@color/black"
                 android:layout_column="1"/>
         </TableRow>
 

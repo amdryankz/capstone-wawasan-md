@@ -47,6 +47,7 @@ class SettingActivity : AppCompatActivity(), ProfileFragment.ProfileUpdateListen
             val profileFragment = ProfileFragment()
             supportFragmentManager
                 .beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
                 .replace(R.id.container, profileFragment)
                 .addToBackStack(null)
                 .commit()
@@ -56,6 +57,7 @@ class SettingActivity : AppCompatActivity(), ProfileFragment.ProfileUpdateListen
             val changePasswordFragment = ChangePasswordFragment()
             supportFragmentManager
                 .beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
                 .replace(R.id.container, changePasswordFragment)
                 .addToBackStack(null)
                 .commit()
@@ -64,11 +66,13 @@ class SettingActivity : AppCompatActivity(), ProfileFragment.ProfileUpdateListen
         binding.backBtn.setOnClickListener {
             val intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
 
         binding.btnConfigure.setOnClickListener {
             val intent = Intent(this, ConfigureHostActivity::class.java)
             startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
     }
 
@@ -84,22 +88,30 @@ class SettingActivity : AppCompatActivity(), ProfileFragment.ProfileUpdateListen
 
     private fun showLogoutConfirmationDialog() {
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("Konfirmasi Logout")
-            .setMessage("Anda yakin ingin logout?")
-            .setPositiveButton("Iya") { dialog, _ ->
+        builder.setTitle("Confirm Logout")
+            .setMessage("Are you sure you want to logout?")
+            .setPositiveButton("Yes") { dialog, _ ->
                 // Logout
                 authManager.logout {
                     val intent = Intent(this, LoginActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
                     finishAffinity()
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
                 }
                 dialog.dismiss()
             }
-            .setNegativeButton("Tidak") { dialog, _ ->
+            .setNegativeButton("No") { dialog, _ ->
                 dialog.dismiss()
             }
             .create()
             .show()
     }
+
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+    }
+
 }

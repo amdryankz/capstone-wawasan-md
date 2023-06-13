@@ -29,23 +29,23 @@ class ConfigureHostViewModel : ViewModel() {
         db: String
     ): String? {
         if (username.isEmpty()) {
-            return "Username harus diisi"
+            return "Username is required"
         }
 
         if (password.isEmpty()) {
-            return "Password harus diisi"
+            return "Password is required"
         }
 
         if (host.isEmpty()) {
-            return "Host harus diisi"
+            return "Host is required"
         }
 
         if (port.isEmpty()) {
-            return "Port harus diisi"
+            return "Port is required"
         }
 
         if (db.isEmpty()) {
-            return "Database harus diisi"
+            return "Database is required"
         }
 
         return null

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Patterns
 import com.google.firebase.auth.FirebaseAuth
+import id.capstone.wawasan.R
 import id.capstone.wawasan.databinding.ActivityLoginBinding
 import id.capstone.wawasan.ui.AuthManager
 import id.capstone.wawasan.ui.home.HomeActivity
@@ -38,7 +39,7 @@ class LoginActivity : AppCompatActivity() {
                 if (success) {
                     navigateToHomeActivity()
                 } else {
-                    ToastUtil.showShortToast(this, error ?: "Login Gagal")
+                    ToastUtil.showShortToast(this, error ?: "Login Failed")
                 }
             }
         }
@@ -46,13 +47,13 @@ class LoginActivity : AppCompatActivity() {
 
     private fun validateEmail(email: String): Boolean {
         if (email.isEmpty()) {
-            binding.etEmail.error = "Email harus diisi"
+            binding.etEmail.error = "Email is required"
             binding.etEmail.requestFocus()
             return false
         }
 
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            binding.etEmail.error = "Email tidak valid"
+            binding.etEmail.error = "Email not valid"
             binding.etEmail.requestFocus()
             return false
         }
@@ -62,7 +63,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun validatePassword(password: String): Boolean {
         if (password.isEmpty()) {
-            binding.etPassword.error = "Password harus diisi"
+            binding.etPassword.error = "Password is required"
             binding.etPassword.requestFocus()
             return false
         }
@@ -75,5 +76,6 @@ class LoginActivity : AppCompatActivity() {
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
         startActivity(intent)
         finish()
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
     }
 }

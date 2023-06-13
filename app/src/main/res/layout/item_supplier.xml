@@ -8,8 +8,9 @@
         <TextView
             android:id="@+id/tv_supplier"
             android:text="@string/supplier"
-            android:textSize="16sp"
+            android:textSize="20sp"
             android:padding="10dp"
+            android:textColor="@color/black"
             android:layout_column="1"/>
     </TableRow>
     

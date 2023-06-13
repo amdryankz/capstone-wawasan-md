@@ -15,6 +15,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.squareup.picasso.Picasso
+import id.capstone.wawasan.R
 import id.capstone.wawasan.databinding.FragmentProfileBinding
 import id.capstone.wawasan.ui.AuthManager
 import id.capstone.wawasan.ui.ImageUploader
@@ -65,6 +66,7 @@ class ProfileFragment : Fragment() {
         binding.backBtn.setOnClickListener {
             val intent = Intent(requireContext(), SettingActivity::class.java)
             startActivity(intent)
+            requireActivity().finish()
         }
 
         profileUpdateListener = activity as? ProfileUpdateListener
@@ -78,7 +80,7 @@ class ProfileFragment : Fragment() {
             val name = binding.etName.text.toString().trim()
 
             if (name.isEmpty()) {
-                binding.etName.error = "Name harus diisi"
+                binding.etName.error = "Name is required"
                 binding.etName.requestFocus()
                 return@setOnClickListener
             }
@@ -90,7 +92,7 @@ class ProfileFragment : Fragment() {
 
             user?.updateProfile(profileUpdateRequest)?.addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    Toast.makeText(activity, "Profil diperbarui", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(activity, "Profile updated", Toast.LENGTH_SHORT).show()
                     profileUpdateListener?.onProfileUpdated(name, image)
                 } else {
                     Toast.makeText(activity, "${task.exception?.message}", Toast.LENGTH_SHORT)
@@ -110,17 +112,17 @@ class ProfileFragment : Fragment() {
     }
 
     private fun showImagePickerDialog() {
-        val options = arrayOf("Kamera", "Galeri")
+        val options = arrayOf("Camera", "Gallery")
 
         AlertDialog.Builder(requireContext())
-            .setTitle("Pilih gambar")
+            .setTitle("Choose Image")
             .setItems(options) { _, which ->
                 when (which) {
                     0 -> intentCamera()
                     1 -> getContent.launch("image/*")
                 }
             }
-            .setNegativeButton("Batal") { dialog, _ ->
+            .setNegativeButton("Cancel") { dialog, _ ->
                 dialog.dismiss()
             }
             .show()
@@ -139,6 +141,11 @@ class ProfileFragment : Fragment() {
 
     interface ProfileUpdateListener {
         fun onProfileUpdated(name: String?, photoUrl: Uri?)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        activity?.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     override fun onDestroyView() {

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
+import id.capstone.wawasan.R
 import id.capstone.wawasan.databinding.ActivityConfigureHostBinding
 import id.capstone.wawasan.ui.home.HomeActivity
 import id.capstone.wawasan.ui.setting.SettingActivity
@@ -41,22 +42,31 @@ class ConfigureHostActivity : AppCompatActivity() {
 
         configureHostViewModel.isConfigured.observe(this) { isConfigured ->
             if (isConfigured) {
-                Toast.makeText(this, "Database berhasil terkoneksi", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Database connected", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, HomeActivity::class.java)
                 startActivity(intent)
                 finish()
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
             }
         }
 
         configureHostViewModel.isConnected.observe(this) { isConnected ->
             if (isButtonPressed && !isConnected) {
-                Toast.makeText(this, "Gagal terkoneksi dengan Database", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Failed to connect to the database", Toast.LENGTH_SHORT).show()
             }
         }
 
         binding.backBtn.setOnClickListener {
             val intent = Intent(this, SettingActivity::class.java)
             startActivity(intent)
+            finish()
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 }

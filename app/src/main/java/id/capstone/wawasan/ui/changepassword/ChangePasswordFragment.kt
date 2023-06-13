@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import id.capstone.wawasan.R
 import id.capstone.wawasan.databinding.FragmentChangePasswordBinding
 import id.capstone.wawasan.ui.AuthManager
 import id.capstone.wawasan.ui.setting.SettingActivity
@@ -41,12 +42,12 @@ class ChangePasswordFragment : Fragment() {
             val confirmPassword = binding?.etCpassword?.text.toString().trim()
 
             if (newPassword.isEmpty() || confirmPassword.isEmpty() || currentPassword.isEmpty()) {
-                Snackbar.make(view, "Kolom tidak boleh kosong", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(view, "Fields cannot be empty", Snackbar.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             if (newPassword != confirmPassword) {
-                Snackbar.make(view, "Konfirmasi password tidak cocok", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(view, "Password confirmation does not match", Snackbar.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -55,13 +56,13 @@ class ChangePasswordFragment : Fragment() {
                 ?.addOnSuccessListener {
                     user.updatePassword(newPassword)
                         .addOnSuccessListener {
-                            Snackbar.make(view, "Password berhasil diubah", Snackbar.LENGTH_SHORT)
+                            Snackbar.make(view, "Password successfully changed", Snackbar.LENGTH_SHORT)
                                 .show()
                         }
                         .addOnFailureListener { exception ->
                             Snackbar.make(
                                 view,
-                                "Gagal mengubah password: ${exception.message}",
+                                "Failed to change password: ${exception.message}",
                                 Snackbar.LENGTH_SHORT
                             ).show()
                         }
@@ -79,7 +80,13 @@ class ChangePasswordFragment : Fragment() {
         binding?.backBtn?.setOnClickListener {
             val intent = Intent(requireContext(), SettingActivity::class.java)
             startActivity(intent)
+            requireActivity().finish()
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        activity?.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     override fun onDestroyView() {

@@ -14,6 +14,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.squareup.picasso.Picasso
+import id.capstone.wawasan.R
 import id.capstone.wawasan.adapter.DataAdapter
 import id.capstone.wawasan.databinding.ActivityHomeBinding
 import id.capstone.wawasan.retrofit.DataItem
@@ -83,6 +84,7 @@ class HomeActivity : AppCompatActivity(), ProfileFragment.ProfileUpdateListener 
         binding.icSetting.setOnClickListener {
             val intent = Intent(this, SettingActivity::class.java)
             startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
 
         val layoutManager = LinearLayoutManager(this)
