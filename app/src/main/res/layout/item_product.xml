@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:stretchColumns="1,2">
+
+    <TableRow>
+        <TextView
+            android:id="@+id/tv_code"
+            android:text="@string/code"
+            android:textSize="20sp"
+            android:padding="10dp"
+            android:textColor="@color/black"
+            android:layout_column="1"/>
+        <TextView
+            android:id="@+id/tv_qty"
+            android:text="@string/quantity"
+            android:textSize="20sp"
+            android:padding="10dp"
+            android:textColor="@color/black"
+            android:layout_column="2"/>
+    </TableRow>
+
+</TableLayout>

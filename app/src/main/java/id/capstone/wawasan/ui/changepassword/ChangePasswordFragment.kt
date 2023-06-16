@@ -70,7 +70,7 @@ class ChangePasswordFragment : Fragment() {
                 ?.addOnFailureListener { exception ->
                     Snackbar.make(
                         view,
-                        "Gagal melakukan authentikasi: ${exception.message}",
+                        "Failed to authenticate: ${exception.message}",
                         Snackbar.LENGTH_SHORT
                     ).show()
                 }

@@ -31,6 +31,23 @@ data class DbResponse(
 	val message: String
 ) : Parcelable
 
+@Parcelize
+data class ProductResponse(
+
+	@field:SerializedName("prediction")
+	val prediction: List<PredictionItem>
+) : Parcelable
+
+@Parcelize
+data class PredictionItem(
+
+	@field:SerializedName("code")
+	val code: String,
+
+	@field:SerializedName("qty")
+	val qty: Int
+) : Parcelable
+
 data class HostConfiguration(
 	val username: String = "",
 	val password: String = "",

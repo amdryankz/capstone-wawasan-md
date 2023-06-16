@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -15,7 +16,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.squareup.picasso.Picasso
 import id.capstone.wawasan.R
-import id.capstone.wawasan.adapter.DataAdapter
+import id.capstone.wawasan.adapter.SupplierAdapter
 import id.capstone.wawasan.databinding.ActivityHomeBinding
 import id.capstone.wawasan.retrofit.DataItem
 import id.capstone.wawasan.retrofit.HostConfiguration
@@ -23,6 +24,7 @@ import id.capstone.wawasan.ui.AuthManager
 import id.capstone.wawasan.ui.profile.ProfileFragment
 import id.capstone.wawasan.ui.setting.SettingActivity
 import id.capstone.wawasan.ui.configurehost.ConfigureHostViewModel
+import id.capstone.wawasan.ui.supplierproduct.SupplierProductActivity
 import java.util.Locale
 
 class HomeActivity : AppCompatActivity(), ProfileFragment.ProfileUpdateListener {
@@ -81,6 +83,10 @@ class HomeActivity : AppCompatActivity(), ProfileFragment.ProfileUpdateListener 
             }
         })
 
+        homeViewModel.isLoading.observe(this) {
+            showLoading(it)
+        }
+
         binding.icSetting.setOnClickListener {
             val intent = Intent(this, SettingActivity::class.java)
             startActivity(intent)
@@ -99,12 +105,14 @@ class HomeActivity : AppCompatActivity(), ProfileFragment.ProfileUpdateListener 
                 val dataItems = dataResponse.data
                 val filteredDataItems =
                     filterDataItems(dataItems, filter)
-                val adapter = DataAdapter(filteredDataItems)
+                val adapter = SupplierAdapter(filteredDataItems)
                 binding.rv.adapter = adapter
 
-                adapter.setOnItemClickCallback(object : DataAdapter.OnItemClickCallback {
-                    override fun onItemClicked(list: List<DataItem>) {
-
+                adapter.setOnItemClickCallback(object : SupplierAdapter.OnItemClickCallback {
+                    override fun onItemClicked(list: DataItem) {
+                        val intent = Intent(this@HomeActivity, SupplierProductActivity::class.java)
+                        intent.putExtra(SupplierProductActivity.KEY_USERS, list)
+                        startActivity(intent)
                     }
                 })
             }
@@ -157,6 +165,10 @@ class HomeActivity : AppCompatActivity(), ProfileFragment.ProfileUpdateListener 
                 Picasso.get().load(user.photoUrl).into(binding.ivProfile)
             }
         }
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
     override fun onResume() {

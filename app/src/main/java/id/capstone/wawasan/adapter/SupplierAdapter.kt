@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import id.capstone.wawasan.databinding.ItemSupplierBinding
 import id.capstone.wawasan.retrofit.DataItem
 
-class DataAdapter(private val list: List<DataItem>) : RecyclerView.Adapter<DataAdapter.DataViewHolder>() {
+class SupplierAdapter(private val list: List<DataItem>) : RecyclerView.Adapter<SupplierAdapter.DataViewHolder>() {
 
     private lateinit var onItemClickCallback: OnItemClickCallback
 
@@ -31,9 +31,13 @@ class DataAdapter(private val list: List<DataItem>) : RecyclerView.Adapter<DataA
 
     override fun onBindViewHolder(holder: DataViewHolder, position: Int) {
         holder.bind(list[position])
+
+        holder.itemView.setOnClickListener {
+            onItemClickCallback.onItemClicked(list[holder.adapterPosition])
+        }
     }
 
     interface OnItemClickCallback {
-        fun onItemClicked(list: List<DataItem>)
+        fun onItemClicked(list: DataItem)
     }
 }
